@@ -1,9 +1,11 @@
 package ru.hogwarts.school.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.repositories.StudentRepository;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -12,43 +14,35 @@ import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
-    private final Map<Long, Student> studentMap = new HashMap<>();
-    private Long lastId = 0L;
+    @Autowired
+    private final StudentRepository studentRepository;
+
+    public StudentService(StudentRepository studentRepository) {
+        this.studentRepository = studentRepository;
+    }
 
     public Student createStudent(Student student) {
-        student.setId(++lastId);
-        studentMap.put(lastId, student);
-        return student;
+        return studentRepository.save(student);
     }
 
-    public ResponseEntity<Collection<Student>> filterByAge(int age) {
-        Collection<Student> students = studentMap.values().stream().filter(student -> student.getAge() == age).collect(Collectors.toList());
-        if (students.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-        return ResponseEntity.ok(students);
+    public Collection<Student> filterByAge(int age) {
+        return studentRepository.findByAge(age);
     }
 
-    public ResponseEntity<Student> findStudent(long id) {
-        if (studentMap.get(id) == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-        return ResponseEntity.ok(studentMap.get(id));
+    public Student findStudent(long id) {
+        return studentRepository.findById(id).get();
     }
 
-    public ResponseEntity<Collection<Student>> getAllStudent() {
-        return ResponseEntity.ok(studentMap.values());
+    public Collection<Student> getAllStudent() {
+        return studentRepository.findAll();
     }
 
-    public ResponseEntity<Student> editStudent(Student student) {
-        if (studentMap.get(student.getId()) == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-        return ResponseEntity.ok(studentMap.put(student.getId(), student));
+    public Student editStudent(Student student) {
+        return studentRepository.save(student);
     }
 
-    public Student deleteStudent(long id) {
-        return studentMap.remove(id);
+    public void deleteStudent(long id) {
+        studentRepository.deleteById(id);
     }
 
 }

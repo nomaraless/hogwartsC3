@@ -1,5 +1,6 @@
 package ru.hogwarts.school.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Faculty;
@@ -10,7 +11,7 @@ import java.util.Collection;
 @RestController
 @RequestMapping("/faculty")
 public class FacultyController {
-    private FacultyService service;
+    private final FacultyService service;
 
     public FacultyController(FacultyService service) {
         this.service = service;
@@ -18,16 +19,20 @@ public class FacultyController {
 
     @GetMapping("{id}")
     public ResponseEntity<Faculty> getFaculty(@PathVariable long id) {
-        return service.findFaculty(id);
+        Faculty faculty = service.findFaculty(id);
+        if (faculty == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok(faculty);
     }
 
     @GetMapping
     public ResponseEntity<Collection<Faculty>> getAllFaculty() {
-        return service.getAllFaculty();
+        return ResponseEntity.ok(service.getAllFaculty());
     }
 
     @GetMapping("/filter/{color}")
-    public ResponseEntity<Collection<Faculty>> filterByColor(@PathVariable String color) {
+    public Collection<Faculty> filterByColor(@PathVariable String color) {
         return service.filterByColor(color);
     }
 
@@ -38,12 +43,17 @@ public class FacultyController {
     }
 
     @DeleteMapping("{id}")
-    public Faculty deleteFaculty(long id) {
-        return service.deleteFaculty(id);
+    public ResponseEntity<Faculty> deleteFaculty(long id) {
+        service.deleteFaculty(id);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping
     public ResponseEntity<Faculty> editFaculty(@RequestBody Faculty faculty) {
-        return service.editFaculty(faculty);
+        Faculty faculty1 = service.editFaculty(faculty);
+        if (faculty1 == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+        return ResponseEntity.ok(faculty);
     }
 }
