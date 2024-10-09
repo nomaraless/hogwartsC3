@@ -26,7 +26,7 @@ public class FacultyService {
     }
 
     public Collection<Faculty> filterByColor(String color) {
-        return facultyRepository.findByColor(color);
+        return facultyRepository.findFacultyByColor(color);
     }
 
     public Faculty findFaculty(long id) {

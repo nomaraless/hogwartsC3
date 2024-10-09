@@ -38,12 +38,12 @@ public class FacultyController {
 
     @PostMapping
 
-    public Faculty createFaculty(Faculty faculty) {
+    public Faculty createFaculty(@RequestBody Faculty faculty) {
         return service.createFaculty(faculty);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Faculty> deleteFaculty(long id) {
+    public ResponseEntity<Faculty> deleteFaculty(@PathVariable long id) {
         service.deleteFaculty(id);
         return ResponseEntity.ok().build();
     }

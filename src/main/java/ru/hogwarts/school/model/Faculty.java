@@ -2,7 +2,9 @@ package ru.hogwarts.school.model;
 
 import jakarta.persistence.*;
 
+import java.util.Collection;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 public class Faculty {
@@ -13,6 +15,10 @@ public class Faculty {
     private Long id;
     private String name;
     private String color;
+
+    @OneToMany(mappedBy = "faculty")
+
+    private Collection<Student> students;
 
     public Faculty(Long id, String name, String color) {
         this.id = id;
