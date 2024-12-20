@@ -26,7 +26,7 @@ public class FacultyController {
         return ResponseEntity.ok(faculty);
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<Collection<Faculty>> getAllFaculty() {
         return ResponseEntity.ok(service.getAllFaculty());
     }
@@ -37,7 +37,6 @@ public class FacultyController {
     }
 
     @PostMapping
-
     public Faculty createFaculty(@RequestBody Faculty faculty) {
         return service.createFaculty(faculty);
     }
