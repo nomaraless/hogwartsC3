@@ -7,6 +7,8 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
 
 import java.util.Collection;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/student")
@@ -18,12 +20,13 @@ public class StudentController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Student> getStudent(@PathVariable long id) {
-        Student student = service.findStudent(id);
-        if (student == null) {
+    public ResponseEntity<Student> getStudent(@PathVariable Long id) {
+        try {
+            Student student = service.findStudent(id);
+            return ResponseEntity.ok(student);
+        } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        return ResponseEntity.ok(student);
     }
 
     @GetMapping("/all")
@@ -43,7 +46,7 @@ public class StudentController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Object> deleteStudent(long id) {
+    public ResponseEntity<Object> deleteStudent(@PathVariable Long id) {
         service.deleteStudent(id);
         return ResponseEntity.ok().build();
     }
