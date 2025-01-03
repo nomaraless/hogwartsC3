@@ -95,4 +95,5 @@ public class FacultyControllerTests {
         Assertions
                 .assertThat(responseEntity.getStatusCode().is2xxSuccessful());
     }
+
 }

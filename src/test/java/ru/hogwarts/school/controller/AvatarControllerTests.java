@@ -71,4 +71,5 @@ public class AvatarControllerTests {
         Assertions.assertThat(response.getHeaders().getContentType()).isNotNull();
         Assertions.assertThat(response.getBody()).isNotEmpty();
     }
+
 }
