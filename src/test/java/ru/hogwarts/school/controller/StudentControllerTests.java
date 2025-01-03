@@ -118,4 +118,3 @@ public class StudentControllerTests {
                 .assertThat(responseEntity.getStatusCode().is2xxSuccessful()).isTrue();
     }
 }
-
