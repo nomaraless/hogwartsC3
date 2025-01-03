@@ -110,11 +110,12 @@ public class StudentControllerTests {
     @Test
     public void deleteStudentTest() {
         Student studentTest = restTemplate.postForObject(getUrl(), student, Student.class);
-        restTemplate.delete(getUrl() + "/" + studentTest.getId());
-
+        ResponseEntity<Void> delete = restTemplate.exchange(getUrl() + "/" + studentTest.getId(), HttpMethod.DELETE, null, void.class);
         ResponseEntity<Student> responseEntity = restTemplate.getForEntity(getUrl() + "/" + studentTest.getId(), Student.class);
 
         Assertions
-                .assertThat(responseEntity.getStatusCode().is2xxSuccessful()).isTrue();
+                .assertThat(delete.getStatusCode().is2xxSuccessful()).isTrue();
+        Assertions
+                .assertThat(responseEntity.getStatusCode().is4xxClientError()).isTrue();
     }
 }

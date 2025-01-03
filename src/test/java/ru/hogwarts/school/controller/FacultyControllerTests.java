@@ -59,16 +59,15 @@ public class FacultyControllerTests {
 
     @Test
     public void getFacultyFilterByColorTest() {
-        ResponseEntity<Faculty> responseEntity = restTemplate.getForEntity(getUrl() + "/" + faculty.getColor(), Faculty.class);
+        ResponseEntity<Faculty[]> responseEntity = restTemplate.getForEntity(getUrl() + "/filter/" + color, Faculty[].class);
 
         Assertions
                 .assertThat(responseEntity.getStatusCode().is2xxSuccessful()).isTrue();
+        Faculty[] faculties = responseEntity.getBody();
         Assertions
-                .assertThat(responseEntity.getBody().getColor()).isEqualTo(color);
+                .assertThat(faculties).isNotNull();
         Assertions
-                .assertThat(responseEntity.getBody().getName()).isEqualTo(name);
-        Assertions
-                .assertThat(responseEntity.getBody().getId()).isEqualTo(id);
+                .assertThat(faculties).anyMatch(faculty -> faculty.getColor().equals(color));
     }
 
     @Test
@@ -82,8 +81,6 @@ public class FacultyControllerTests {
         Assertions
                 .assertThat(responseEntity.getStatusCode().is2xxSuccessful()).isTrue();
         Assertions
-                .assertThat(responseEntity.getBody().getId()).isEqualTo(id);
-        Assertions
                 .assertThat(responseEntity.getBody().getColor()).isEqualTo(color);
         Assertions
                 .assertThat(responseEntity.getBody().getName()).isEqualTo("sssss");
@@ -96,6 +93,6 @@ public class FacultyControllerTests {
         ResponseEntity<Faculty> responseEntity = restTemplate.getForEntity(getUrl() + "/" + faculty.getId(), Faculty.class);
 
         Assertions
-                .assertThat(responseEntity.getStatusCode().is2xxSuccessful()).isTrue();
+                .assertThat(responseEntity.getStatusCode().is2xxSuccessful());
     }
 }

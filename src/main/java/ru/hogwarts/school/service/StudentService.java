@@ -48,7 +48,9 @@ public class StudentService {
 
     @Transactional
     public void deleteStudent(long id) {
-        avatarRepository.deleteByStudentId(id);
+        if (avatarRepository.findByStudentId(id) != null) {
+            avatarRepository.deleteByStudentId(id);
+        }
         studentRepository.deleteById(id);
     }
 
