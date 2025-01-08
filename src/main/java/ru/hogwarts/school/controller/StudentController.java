@@ -8,7 +8,6 @@ import ru.hogwarts.school.service.StudentService;
 
 import java.util.Collection;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/student")
@@ -59,4 +58,20 @@ public class StudentController {
         }
         return ResponseEntity.ok(student1);
     }
+
+    @GetMapping("/getLastFiveStudents")
+    public ResponseEntity<Collection<Student>> getLastFiveStudents(){
+        return ResponseEntity.ok(service.getLastFiveStudents());
+    }
+
+    @GetMapping("/getCountStudents")
+    public Integer getCountStudents() {
+        return service.getCountStudents();
+    }
+
+    @GetMapping("/getAvgOfStudents")
+    public Double getAvgOfStidents() {
+        return service.getAvgOfStudents();
+    }
+
 }

@@ -2,21 +2,17 @@ package ru.hogwarts.school.service;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import ru.hogwarts.school.Interface.StudentInterface;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repositories.AvatarRepository;
 import ru.hogwarts.school.repositories.StudentRepository;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Service
-public class StudentService {
+public class StudentService implements StudentInterface {
     @Autowired
     private final StudentRepository studentRepository;
     private final AvatarRepository avatarRepository;
@@ -52,5 +48,17 @@ public class StudentService {
             avatarRepository.deleteByStudentId(id);
         }
         studentRepository.deleteById(id);
+    }
+
+    public Integer getCountStudents() {
+        return studentRepository.getCountStudents();
+    }
+
+    public Double getAvgOfStudents() {
+        return studentRepository.getAvgOfStudents();
+    }
+
+    public Collection<Student> getLastFiveStudents() {
+        return studentRepository.getLastFiveStudents();
     }
 }

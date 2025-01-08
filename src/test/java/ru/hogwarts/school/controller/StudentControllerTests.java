@@ -118,4 +118,31 @@ public class StudentControllerTests {
         Assertions
                 .assertThat(responseEntity.getStatusCode().is4xxClientError()).isTrue();
     }
+
+    @Test
+    public void getLastFiveStudentsTest() {
+        ResponseEntity<Student[]> response = restTemplate.getForEntity("/student/getLastFiveStudents", Student[].class);
+
+        Assertions.assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
+        Assertions.assertThat(response.getBody()).isNotNull();
+        Assertions.assertThat(response.getBody()).hasSizeLessThanOrEqualTo(5);
+    }
+
+    @Test
+    public void getCountStudents() {
+        ResponseEntity<Integer> response = restTemplate.getForEntity("/student/getCountStudents", Integer.class);
+
+        Assertions.assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
+        Assertions.assertThat(response.getBody()).isNotNull();
+        Assertions.assertThat(response.getBody()).isGreaterThanOrEqualTo(0);
+    }
+
+    @Test
+    public void getAvgOgStudents() {
+        ResponseEntity<Double> response = restTemplate.getForEntity("/student/getAvgOfStudents", Double.class);
+
+        Assertions.assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
+        Assertions.assertThat(response.getBody()).isNotNull();
+        Assertions.assertThat(response.getBody()).isGreaterThanOrEqualTo(0);
+    }
 }

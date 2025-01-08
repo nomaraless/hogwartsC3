@@ -3,12 +3,14 @@ package ru.hogwarts.school.service;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.hogwarts.school.model.Avatar;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repositories.AvatarRepository;
-import ru.hogwarts.school.repositories.StudentRepository;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -90,5 +92,24 @@ public class AvatarService {
             throw new IllegalArgumentException("Invalid file name: " + fileName);
         }
         return fileName.substring(fileName.lastIndexOf(".") + 1);
+    }
+
+    public byte[] getAvatarPreview(Long studentId) {
+        Avatar avatar = findAvatar(studentId);
+        return avatar.getPreview();
+    }
+
+    public void avatarToResponse(Long studentId, OutputStream os) throws IOException {
+        Avatar avatar = findAvatar(studentId);
+        Path path = Path.of(avatar.getFilePath());
+
+        try (InputStream is = Files.newInputStream(path)) {
+            is.transferTo(os);
+        }
+    }
+
+    public Page<Avatar> getAvatarsByPage(int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        return avatarRepository.findAll(pageable);
     }
 }

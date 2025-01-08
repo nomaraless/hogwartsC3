@@ -1,6 +1,7 @@
 package ru.hogwarts.school.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,6 +16,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/avatar")
@@ -36,27 +39,42 @@ public class AvatarController {
 
     @GetMapping(value = "/{studentId}/preview")
     public ResponseEntity<byte[]> downloadAvatar(@PathVariable Long studentId) {
+        byte[] preview = avatarService.getAvatarPreview(studentId);
         Avatar avatar = avatarService.findAvatar(studentId);
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.parseMediaType(avatar.getMediaType()));
         httpHeaders.setContentLength(avatar.getPreview().length);
 
-        return ResponseEntity.status(HttpStatus.OK).headers(httpHeaders).body(avatar.getPreview());
+        return ResponseEntity.ok().headers(httpHeaders).body(preview);
     }
 
     @GetMapping(value = "/{studentId}")
-    public void downloadAvatar(@PathVariable Long studentId, HttpServletResponse response) throws  IOException {
+    public void downloadAvatar(@PathVariable Long studentId, HttpServletResponse response) throws IOException {
         Avatar avatar = avatarService.findAvatar(studentId);
 
-        Path path = Path.of(avatar.getFilePath());
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType(avatar.getMediaType());
+        response.setContentLength((int) avatar.getFileSize());
 
-        try (InputStream is = Files.newInputStream(path);
-             OutputStream os = response.getOutputStream();) {
-            response.setStatus(200);
-            response.setContentType(avatar.getMediaType());
-            response.setContentLength((int) avatar.getFileSize());
-            is.transferTo(os);
+        try (OutputStream os = response.getOutputStream()) {
+            avatarService.avatarToResponse(studentId, os);
         }
     }
+
+    @GetMapping("/page")
+    public ResponseEntity<Map<String, Object>> getAvatarsByPage(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+        Page<Avatar> avatarPage = avatarService.getAvatarsByPage(page, size);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("content", avatarPage.getContent());
+        response.put("currentPage", avatarPage.getNumber());
+        response.put("totalItems", avatarPage.getTotalElements());
+        response.put("totalPages", avatarPage.getTotalPages());
+
+        return ResponseEntity.ok(response);
+    }
+
 }
