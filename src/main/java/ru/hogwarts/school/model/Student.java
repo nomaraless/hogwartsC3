@@ -1,10 +1,8 @@
 package ru.hogwarts.school.model;
 
 import jakarta.persistence.*;
-import org.springframework.http.ResponseEntity;
 
 import java.util.Objects;
-import java.util.Optional;
 
 @Entity
 public class Student {

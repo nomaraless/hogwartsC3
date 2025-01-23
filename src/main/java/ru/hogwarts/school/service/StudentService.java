@@ -1,6 +1,8 @@
 package ru.hogwarts.school.service;
 
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.Interface.StudentInterface;
@@ -13,6 +15,8 @@ import java.util.NoSuchElementException;
 
 @Service
 public class StudentService implements StudentInterface {
+    private static final Logger logger = LoggerFactory.getLogger(StudentService.class);
+
     @Autowired
     private final StudentRepository studentRepository;
     private final AvatarRepository avatarRepository;
@@ -23,42 +27,57 @@ public class StudentService implements StudentInterface {
     }
 
     public Student createStudent(Student student) {
+        logger.info("Was invoked method for creating student: ", student);
         return studentRepository.save(student);
     }
 
     public Collection<Student> filterByAge(int age) {
+        logger.info("Was invoked method to filter students by age: ", age);
         return studentRepository.findByAge(age);
     }
 
     public Student findStudent(Long id) {
-        return studentRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Not found"));
+        logger.info("Was invoked method to find student by id: ", id);
+        return studentRepository.findById(id).orElseThrow(() -> {
+            logger.error("There is no student with id = ", id);
+            return new NoSuchElementException("Not found");
+        });
     }
 
     public Collection<Student> getAllStudent() {
+        logger.info("Was invoked method to get all students");
         return studentRepository.findAll();
     }
 
     public Student editStudent(Student student) {
+        logger.info("Was invoked method to edit student: ", student);
         return studentRepository.save(student);
     }
 
     @Transactional
     public void deleteStudent(long id) {
+        logger.info("Was invoked method to delete student by id: ", id);
         if (avatarRepository.findByStudentId(id) != null) {
+            logger.debug("Avatar found for student id = {}, deleting avatar", id);
             avatarRepository.deleteByStudentId(id);
+        } else {
+            logger.warn("No avatar found for student id: ", id);
         }
         studentRepository.deleteById(id);
     }
 
     public Integer getCountStudents() {
+        logger.info("Was invoked method to get count of students");
         return studentRepository.getCountStudents();
     }
 
     public Double getAvgOfStudents() {
+        logger.info("Was invoked method to get average age of students");
         return studentRepository.getAvgOfStudents();
     }
 
     public Collection<Student> getLastFiveStudents() {
+        logger.info("Was invoked method to get the last five students");
         return studentRepository.getLastFiveStudents();
     }
 }
