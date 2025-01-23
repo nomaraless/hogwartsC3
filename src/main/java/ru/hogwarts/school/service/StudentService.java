@@ -11,7 +11,9 @@ import ru.hogwarts.school.repositories.AvatarRepository;
 import ru.hogwarts.school.repositories.StudentRepository;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentService implements StudentInterface {
@@ -80,4 +82,21 @@ public class StudentService implements StudentInterface {
         logger.info("Was invoked method to get the last five students");
         return studentRepository.getLastFiveStudents();
     }
+
+    public List<String> getNameStudentStartWithA() {
+        return studentRepository.findAll().stream()
+                .map(Student::getName)
+                .filter(name -> name.startsWith("A"))
+                .map(String::toUpperCase)
+                .sorted()
+                .collect(Collectors.toList());
+    }
+
+    public double getAvgAge() {
+        return studentRepository.findAll().stream()
+                .mapToInt(Student::getAge)
+                .average()
+                .orElse(0);
+    }
+
 }

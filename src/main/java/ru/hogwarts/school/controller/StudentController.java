@@ -7,6 +7,7 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -73,5 +74,17 @@ public class StudentController {
     public Double getAvgOfStidents() {
         return service.getAvgOfStudents();
     }
+
+    @GetMapping("/getNameStartWithA")
+    public List<String> getNameStudentStartWithA() {
+        return service.getNameStudentStartWithA();
+    }
+
+    @GetMapping("/getAvg")
+    public double getAvg() {
+        return service.getAvgAge();
+    }
+
+
 
 }

@@ -11,7 +11,9 @@ import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.repositories.FacultyRepository;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.NoSuchElementException;
+import java.util.stream.IntStream;
 
 @Service
 public class FacultyService implements FacultyInterface {
@@ -60,5 +62,18 @@ public class FacultyService implements FacultyInterface {
         } else {
             logger.warn("No faculty found with id {} to delete", id);
         }
+    }
+
+    public String getLongestFacultyName() {
+        return facultyRepository.findAll().stream()
+                .map(Faculty::getName)
+                .max(Comparator.comparingInt(String::length))
+                .orElse("Faculty not found");
+    }
+
+    public int sum() {
+//        int a = 1_000_000;
+//        return a * (a + 1 / 2);
+        return IntStream.rangeClosed(0, 1_000_000).sum();
     }
 }
