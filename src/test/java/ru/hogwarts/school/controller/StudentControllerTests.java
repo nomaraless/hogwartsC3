@@ -129,7 +129,7 @@ public class StudentControllerTests {
     }
 
     @Test
-    public void getCountStudents() {
+    public void getCountStudentsTest() {
         ResponseEntity<Integer> response = restTemplate.getForEntity("/student/getCountStudents", Integer.class);
 
         Assertions.assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
@@ -138,11 +138,34 @@ public class StudentControllerTests {
     }
 
     @Test
-    public void getAvgOgStudents() {
+    public void getAvgOgStudentsTest() {
         ResponseEntity<Double> response = restTemplate.getForEntity("/student/getAvgOfStudents", Double.class);
 
         Assertions.assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
         Assertions.assertThat(response.getBody()).isNotNull();
         Assertions.assertThat(response.getBody()).isGreaterThanOrEqualTo(0);
     }
+
+    @Test
+    public void printStudentsInParallelTest() {
+        Assertions.assertThatCode(() -> studentController.printStudentsInParallel())
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    public void printStudentsInSynchronizedTest() {
+        Assertions.assertThatCode(() -> studentController.printStudentsInSynchronized())
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    public void threadSafetyTest() {
+        Assertions.assertThatCode(() -> {
+            for (int i = 0; i < 10; i++) {
+                studentController.printStudentsInParallel();
+                studentController.printStudentsInSynchronized();
+            }
+        }).doesNotThrowAnyException();
+    }
+
 }

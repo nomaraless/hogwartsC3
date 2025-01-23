@@ -99,4 +99,52 @@ public class StudentService implements StudentInterface {
                 .orElse(0);
     }
 
+    public void printStudentsInParallel() {
+        List<Student> students = studentRepository.findAll().stream().toList();
+
+        System.out.println("Оснвоной поток");
+        System.out.println(students.get(0).getName());
+        System.out.println(students.get(1).getName());
+
+        Thread thread = new Thread(() -> {
+            System.out.println("Первый поток");
+            System.out.println(students.get(2).getName());
+            System.out.println(students.get(3).getName());
+        });
+
+        Thread thread1 = new Thread(() -> {
+            System.out.println("Второй поток");
+            System.out.println(students.get(4).getName());
+            System.out.println(students.get(5).getName());
+        });
+
+        thread.start();
+        thread1.start();
+    }
+
+    public void printStudentsInSynchronized() {
+        List<Student> students = studentRepository.findAll().stream().toList();
+
+        synchronized (this) {
+            System.out.println(students.get(0).getName());
+            System.out.println(students.get(1).getName());
+        }
+
+        Thread thread = new Thread(() -> {
+            synchronized (this) {
+                System.out.println(students.get(2).getName());
+                System.out.println(students.get(3).getName());
+            }
+        });
+
+        Thread thread1 = new Thread(() -> {
+            synchronized (this) {
+                System.out.println(students.get(4).getName());
+                System.out.println(students.get(5).getName());
+            }
+        });
+
+        thread.start();
+        thread1.start();
+    }
 }

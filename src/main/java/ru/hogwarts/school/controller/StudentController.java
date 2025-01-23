@@ -61,7 +61,7 @@ public class StudentController {
     }
 
     @GetMapping("/getLastFiveStudents")
-    public ResponseEntity<Collection<Student>> getLastFiveStudents(){
+    public ResponseEntity<Collection<Student>> getLastFiveStudents() {
         return ResponseEntity.ok(service.getLastFiveStudents());
     }
 
@@ -85,6 +85,13 @@ public class StudentController {
         return service.getAvgAge();
     }
 
+    @GetMapping("/print-parallel")
+    public void printStudentsInParallel() {
+        service.printStudentsInParallel();
+    }
 
-
+    @GetMapping("/print-synchronized")
+    public void printStudentsInSynchronized() {
+        service.printStudentsInSynchronized();
+    }
 }
