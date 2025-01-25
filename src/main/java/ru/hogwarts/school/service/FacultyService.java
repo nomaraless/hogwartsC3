@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.NoSuchElementException;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @Service
 public class FacultyService implements FacultyInterface {
@@ -72,8 +73,20 @@ public class FacultyService implements FacultyInterface {
     }
 
     public int sum() {
-//        int a = 1_000_000;
+//        int a = 1_000_000;            //Самый быстрый вариант
 //        return a * (a + 1 / 2);
+
+//        long startTime = System.nanoTime();             //Оптимизированная версия со средней скоростью выполнения 7836700
+//        int sum = IntStream.rangeClosed(0, 1_000_000).sum();
+//        long endTime = System.nanoTime();
+//        logger.info(String.valueOf(endTime - startTime));
+
+//        long startTime1 = System.nanoTime();              //Самый медленный вариант со средне скоростью 22291200
+//        int sum1 = Stream.iterate(1, a -> a + 1)
+//                .limit(1_000_000)
+//                .reduce(0, Integer::sum);
+//        long endTime1 = System.nanoTime();
+//        logger.info(String.valueOf(endTime1 - startTime1));
         return IntStream.rangeClosed(0, 1_000_000).sum();
     }
 }

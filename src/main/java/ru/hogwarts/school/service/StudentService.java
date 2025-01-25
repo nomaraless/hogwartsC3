@@ -122,25 +122,29 @@ public class StudentService implements StudentInterface {
         thread1.start();
     }
 
+    private synchronized void printName(String name) {
+        logger.info(name);
+    }
+
     public void printStudentsInSynchronized() {
         List<Student> students = studentRepository.findAll().stream().toList();
 
         synchronized (this) {
-            System.out.println(students.get(0).getName());
-            System.out.println(students.get(1).getName());
+            printName(students.get(0).getName());
+            printName(students.get(1).getName());
         }
 
         Thread thread = new Thread(() -> {
             synchronized (this) {
-                System.out.println(students.get(2).getName());
-                System.out.println(students.get(3).getName());
+                printName(students.get(2).getName());
+                printName(students.get(3).getName());
             }
         });
 
         Thread thread1 = new Thread(() -> {
             synchronized (this) {
-                System.out.println(students.get(4).getName());
-                System.out.println(students.get(5).getName());
+                printName(students.get(4).getName());
+                printName(students.get(5).getName());
             }
         });
 
